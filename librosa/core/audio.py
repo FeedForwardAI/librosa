@@ -123,27 +123,29 @@ def load(path, sr=22050, mono=True, offset=0.0, duration=None,
 
     """
 
-    try:
-        with sf.SoundFile(path) as sf_desc:
-            sr_native = sf_desc.samplerate
-            if offset:
-                # Seek to the start of the target read
-                sf_desc.seek(int(offset * sr_native))
-            if duration is not None:
-                frame_duration = int(duration * sr_native)
-            else:
-                frame_duration = -1
+    # try:
+    #     with sf.SoundFile(path) as sf_desc:
+    #         sr_native = sf_desc.samplerate
+    #         if offset:
+    #             # Seek to the start of the target read
+    #             sf_desc.seek(int(offset * sr_native))
+    #         if duration is not None:
+    #             frame_duration = int(duration * sr_native)
+    #         else:
+    #             frame_duration = -1
 
-            # Load the target number of frames, and transpose to match librosa form
-            y = sf_desc.read(frames=frame_duration, dtype=dtype, always_2d=False).T
+    #         # Load the target number of frames, and transpose to match librosa form
+    #         y = sf_desc.read(frames=frame_duration, dtype=dtype, always_2d=False).T
 
-    except RuntimeError as exc:
-        # If soundfile failed, try audioread instead
-        if isinstance(path, (str, pathlib.PurePath)):
-            warnings.warn('PySoundFile failed. Trying audioread instead.')
-            y, sr_native = __audioread_load(path, offset, duration, dtype)
-        else:
-            raise(exc)
+    # except RuntimeError as exc:
+    #     # If soundfile failed, try audioread instead
+    #     if isinstance(path, (str, pathlib.PurePath)):
+    #         warnings.warn('PySoundFile failed. Trying audioread instead.')
+    #         y, sr_native = __audioread_load(path, offset, duration, dtype)
+    #     else:
+    #         raise(exc)
+
+    y, sr_native = __audioread_load(path, offset, duration, dtype)
 
     # Final cleanup for dtype and contiguity
     if mono:
